@@ -1,52 +1,5 @@
 // Select draggable elements and the drag container
 const draggables = document.querySelectorAll('.draggable');
-const dragContainer = document.querySelector('.drag-container');
-
-// Enable dragging for tokens
-draggables.forEach(draggable => {
-    draggable.addEventListener('mousedown', (e) => {
-        let shiftX = e.clientX - draggable.getBoundingClientRect().left;
-        let shiftY = e.clientY - draggable.getBoundingClientRect().top;
-
-        const moveAt = (pageX, pageY) => {
-            draggable.style.left = pageX - shiftX + 'px';
-            draggable.style.top = pageY - shiftY + 'px';
-        };
-
-        const onMouseMove = (event) => {
-            moveAt(event.pageX, event.pageY);
-        };
-
-        document.addEventListener('mousemove', onMouseMove);
-
-        draggable.addEventListener('mouseup', () => {
-            document.removeEventListener('mousemove', onMouseMove);
-            draggable.onmouseup = null;
-
-            // Ensure the draggable stays within the container
-            const containerRect = dragContainer.getBoundingClientRect();
-            const draggableRect = draggable.getBoundingClientRect();
-
-            // Constrain the draggable within the container
-            if (draggableRect.left < containerRect.left) {
-                draggable.style.left = '0px';
-            }
-            if (draggableRect.top < containerRect.top) {
-                draggable.style.top = '0px';
-            }
-            if (draggableRect.right > containerRect.right) {
-                draggable.style.left = containerRect.width - draggableRect.width + 'px';
-            }
-            if (draggableRect.bottom > containerRect.bottom) {
-                draggable.style.top = containerRect.height - draggableRect.height + 'px';
-            }
-        });
-    });
-
-    draggable.ondragstart = () => false; // Disable default drag behavior
-});
-
-// Infinity Canvas Implementation
 const canvas = document.getElementById('infiniteCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -144,3 +97,39 @@ window.addEventListener('resize', () => {
 
 // Initial draw
 drawGrid();
+
+// Make the canvas a drop zone for images
+canvas.addEventListener('dragover', (e) => {
+    e.preventDefault(); // Allow dropping
+});
+
+canvas.addEventListener('drop', (e) => {
+    e.preventDefault();
+
+    // Get the dropped image
+    const imgId = e.dataTransfer.getData('text/plain');
+    const img = document.getElementById(imgId);
+
+    if (img) {
+        // Get the drop position relative to the canvas
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left - offsetX) / scale;
+        const y = (e.clientY - rect.top - offsetY) / scale;
+
+        // Draw the image on the canvas
+        ctx.save();
+        ctx.translate(offsetX, offsetY);
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, x, y, 100, 100); // Draw the image at the drop position
+        ctx.restore();
+    }
+});
+
+// Enable dragging for tokens
+draggables.forEach(draggable => {
+    draggable.setAttribute('draggable', true);
+
+    draggable.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', draggable.id); // Pass the image ID
+    });
+});
