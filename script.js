@@ -1,6 +1,8 @@
+// Select draggable elements and the drag container
 const draggables = document.querySelectorAll('.draggable');
 const dragContainer = document.querySelector('.drag-container');
 
+// Enable dragging for tokens
 draggables.forEach(draggable => {
     draggable.addEventListener('mousedown', (e) => {
         let shiftX = e.clientX - draggable.getBoundingClientRect().left;
@@ -21,7 +23,7 @@ draggables.forEach(draggable => {
             document.removeEventListener('mousemove', onMouseMove);
             draggable.onmouseup = null;
 
-            // Check if the draggable is within the drag container
+            // Ensure the draggable stays within the container
             const containerRect = dragContainer.getBoundingClientRect();
             const draggableRect = draggable.getBoundingClientRect();
 
@@ -128,6 +130,13 @@ canvas.addEventListener('wheel', (e) => {
     offsetY = e.clientY - mouseY * scale;
 
     drawGrid();
+});
+
+// Redraw the canvas grid on window resize
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    drawGrid(); // Redraw the grid after resizing
 });
 
 // Initial draw
