@@ -29,19 +29,12 @@ body {
     gap: 10px; /* Add spacing between the images */
 }
 
-.drag-container img {
-    cursor: grab;
-    transition: transform 0.2s ease;
-    width: 100px; /* Set a fixed width for the images */
-    height: 100px; /* Set a fixed height for the images */
-}
-
-.drag-container img:hover {
+.draggable:hover {
     transform: scale(1.1); /* Slight zoom effect on hover */
 }
 
 .draggable {
-    position: absolute; /* Allow the images to be positioned dynamically */
+    position: relative; /* Allow the images to be positioned dynamically */
     width: 100px;
     height: 100px;
     cursor: grab;
