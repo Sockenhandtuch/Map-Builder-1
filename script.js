@@ -27,15 +27,18 @@ draggables.forEach(draggable => {
             const containerRect = dragContainer.getBoundingClientRect();
             const draggableRect = draggable.getBoundingClientRect();
 
-            if (
-                draggableRect.left < containerRect.left ||
-                draggableRect.right > containerRect.right ||
-                draggableRect.top < containerRect.top ||
-                draggableRect.bottom > containerRect.bottom
-            ) {
-                // Reset position if dropped outside the container
+            // Constrain the draggable within the container
+            if (draggableRect.left < containerRect.left) {
                 draggable.style.left = '0px';
+            }
+            if (draggableRect.top < containerRect.top) {
                 draggable.style.top = '0px';
+            }
+            if (draggableRect.right > containerRect.right) {
+                draggable.style.left = containerRect.width - draggableRect.width + 'px';
+            }
+            if (draggableRect.bottom > containerRect.bottom) {
+                draggable.style.top = containerRect.height - draggableRect.height + 'px';
             }
         });
     });
